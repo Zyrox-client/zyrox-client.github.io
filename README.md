@@ -1,3 +1,3 @@
-##Zyrox client website
+<h1>Zyrox client website</h1>
 
 The client itself can be found [here](https://github.com/Zyrox-client/Zyrox-gimkit-client).
