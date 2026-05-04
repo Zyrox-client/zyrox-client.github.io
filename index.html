@@ -1,1 +1,1165 @@
-<h1>Contents not here yet</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Zyrox client — a modern userscript hacked client for Gimkit." />
+  <title>Zyrox client</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ───────────────────────────────────────────────
+       DESIGN TOKENS
+    ─────────────────────────────────────────────── */
+    :root {
+      --bg-base:       #08080f;
+      --bg-surface:    #0f0f1a;
+      --bg-card:       rgba(18, 18, 30, 0.75);
+      --red:           #e8192c;
+      --red-dim:       #a01020;
+      --red-glow:      rgba(232, 25, 44, 0.25);
+      --red-border:    rgba(232, 25, 44, 0.35);
+      --text-primary:  #f0f0f8;
+      --text-secondary:#9090b0;
+      --text-muted:    #55556a;
+      --glass-border:  rgba(255,255,255,0.07);
+      --glass-blur:    16px;
+      --radius-card:   14px;
+      --radius-btn:    9px;
+      --nav-h:         64px;
+      --font-display:  'Exo 2', sans-serif;
+      --font-mono:     'JetBrains Mono', monospace;
+      --transition:    0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ───────────────────────────────────────────────
+       RESET & BASE
+    ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* Focus styles */
+    :focus-visible {
+      outline: 2px solid var(--red);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* ───────────────────────────────────────────────
+       BACKGROUND MESH
+    ─────────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(180,15,30,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 90% 80%,  rgba(140,10,25,0.10) 0%, transparent 60%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 39px,
+          rgba(255,255,255,0.018) 39px,
+          rgba(255,255,255,0.018) 40px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 39px,
+          rgba(255,255,255,0.018) 39px,
+          rgba(255,255,255,0.018) 40px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ───────────────────────────────────────────────
+       STICKY NAV
+    ─────────────────────────────────────────────── */
+    #main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+      background: rgba(8,8,15,0.72);
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      border-bottom: 1px solid var(--glass-border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    #main-nav.scrolled {
+      background: rgba(8,8,15,0.92);
+      border-bottom-color: var(--red-border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+    }
+    .nav-brand-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: color var(--transition), background var(--transition);
+      letter-spacing: 0.03em;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.06);
+    }
+    .nav-links a.active { color: var(--red); }
+
+    .nav-cta {
+      background: var(--red) !important;
+      color: #fff !important;
+      padding: 0.4rem 1rem !important;
+      border-radius: var(--radius-btn) !important;
+      transition: background var(--transition), box-shadow var(--transition) !important;
+    }
+    .nav-cta:hover {
+      background: #ff2a3a !important;
+      box-shadow: 0 0 16px var(--red-glow) !important;
+    }
+
+    /* Hamburger for mobile */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+    .nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ───────────────────────────────────────────────
+       SECTION BASE
+    ─────────────────────────────────────────────── */
+    section, footer {
+      position: relative;
+      z-index: 1;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 5vw, 2.5rem);
+    }
+
+    /* Section label badge */
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: rgba(232,25,44,0.1);
+      border: 1px solid var(--red-border);
+      border-radius: 100px;
+      padding: 0.28rem 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .section-badge::before { content: '//'; opacity: 0.6; }
+
+    /* ───────────────────────────────────────────────
+       HERO
+    ─────────────────────────────────────────────── */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: calc(var(--nav-h) + 2rem) clamp(1.25rem, 5vw, 2rem) 5rem;
+    }
+
+    .hero-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 28px var(--red-glow));
+      margin-bottom: 2rem;
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s ease forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 9vw, 7rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s ease forwards;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #ff3347 0%, #e8192c 40%, #ff6070 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s ease forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    .scroll-hint svg { animation: bounce 2s ease infinite; }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(5px); }
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+
+    /* ───────────────────────────────────────────────
+       BUTTONS
+    ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.72rem 1.6rem;
+      border-radius: var(--radius-btn);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      border: none;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+    .btn:hover  { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(232,25,44,0.35);
+    }
+    .btn-primary:hover {
+      background: #ff2a3a;
+      box-shadow: 0 6px 30px rgba(232,25,44,0.55);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .btn-outline-red {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red-border);
+    }
+    .btn-outline-red:hover {
+      background: rgba(232,25,44,0.1);
+      box-shadow: 0 0 16px var(--red-glow);
+    }
+
+    /* icon inside button */
+    .btn svg { flex-shrink: 0; }
+
+    /* ───────────────────────────────────────────────
+       DIVIDER
+    ─────────────────────────────────────────────── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glass-border) 30%, var(--red-border) 50%, var(--glass-border) 70%, transparent);
+      margin: 0;
+    }
+
+    /* ───────────────────────────────────────────────
+       FEATURES / CONTENTS SECTION
+    ─────────────────────────────────────────────── */
+    #contents {
+      padding: 6rem 0;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    .section-sub {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-card);
+      padding: 1.75rem;
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,25,44,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card:hover {
+      border-color: var(--red-border);
+      box-shadow: 0 8px 40px rgba(232,25,44,0.12), 0 0 0 1px rgba(232,25,44,0.08);
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(232,25,44,0.12);
+      border: 1px solid var(--red-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.1rem;
+      color: var(--red);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.55rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .card-tag {
+      display: inline-block;
+      margin-top: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: rgba(232,25,44,0.1);
+      border: 1px solid var(--red-border);
+      border-radius: 100px;
+      padding: 0.22rem 0.65rem;
+    }
+
+    /* Roadmap list inside card */
+    .roadmap-list {
+      list-style: none;
+      margin-top: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .roadmap-list li {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .roadmap-list li::before {
+      content: '→';
+      color: var(--red);
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      line-height: 1.4;
+    }
+
+    /* ───────────────────────────────────────────────
+       INSTALL SECTION
+    ─────────────────────────────────────────────── */
+    #install {
+      padding: 6rem 0 7rem;
+    }
+
+    .install-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      overflow: hidden;
+    }
+
+    .install-header {
+      padding: 2.5rem 2.5rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .install-body {
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 1.4rem; }
+
+    .step {
+      display: flex;
+      gap: 1.1rem;
+      align-items: flex-start;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(232,25,44,0.12);
+      border: 1px solid var(--red-border);
+      color: var(--red);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .step-content { flex: 1; }
+    .step-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .step-desc {
+      font-size: 0.855rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .step-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .step-link {
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.04);
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+    }
+    .step-link:hover {
+      border-color: var(--red-border);
+      color: var(--red);
+      background: rgba(232,25,44,0.08);
+    }
+
+    /* Install actions panel */
+    .install-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .install-primary-btn {
+      width: 100%;
+      justify-content: center;
+      font-size: 1rem;
+      padding: 0.9rem 1.75rem;
+    }
+
+    .install-alt-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Warning block */
+    .warn-block {
+      margin-top: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: rgba(232,25,44,0.07);
+      border: 1px solid rgba(232,25,44,0.28);
+      border-left: 3px solid var(--red);
+      border-radius: 10px;
+    }
+    .warn-block-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--red);
+      margin-bottom: 0.4rem;
+    }
+    .warn-block p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .warn-block code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: rgba(255,255,255,0.07);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      color: var(--text-primary);
+    }
+
+    /* Support links */
+    .support-links {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .support-links span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.05em;
+    }
+    .support-link {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: 6px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.03);
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+    }
+    .support-link:hover {
+      border-color: var(--red-border);
+      color: var(--text-primary);
+      background: rgba(232,25,44,0.07);
+    }
+
+    /* ───────────────────────────────────────────────
+       FOOTER
+    ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 2.5rem clamp(1.25rem, 5vw, 2.5rem);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+    }
+    .footer-brand-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+    .footer-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.25rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--red); }
+
+    /* ───────────────────────────────────────────────
+       MOBILE NAV OVERLAY
+    ─────────────────────────────────────────────── */
+    .nav-mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-h);
+      left: 0; right: 0;
+      background: rgba(8,8,15,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.25rem clamp(1.25rem, 5vw, 3rem) 1.5rem;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 99;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-menu a {
+      display: block;
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-mobile-menu a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+    .nav-mobile-menu .nav-cta {
+      background: var(--red) !important;
+      color: #fff !important;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    /* ───────────────────────────────────────────────
+       RESPONSIVE
+    ─────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .install-body {
+        grid-template-columns: 1fr;
+      }
+      .install-header { padding: 2rem 1.5rem 0; }
+      .install-body   { padding: 1.75rem 1.5rem 2rem; }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; align-items: center; }
+      .btn { width: 100%; justify-content: center; }
+    }
+
+    /* ───────────────────────────────────────────────
+       UTILITY
+    ─────────────────────────────────────────────── */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     PLACEHOLDER CONSTANTS (edit these freely)
+═══════════════════════════════════════════════ -->
+<script>
+  const LINKS = {
+    greasyfork:  'https://greasyfork.org/en/scripts/572408-zyrox-client-gimkit',
+    github:      'https://github.com/Zyrox-client/Zyrox-gimkit-client',
+    issues:      'https://github.com/Zyrox-client/Zyrox-gimkit-client/issues/new',
+    rawScript:   'https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/refs/heads/main/zyrox-base.js',
+    feedback:    'https://greasyfork.org/en/scripts/572408-zyrox-client-gimkit/feedback',
+    gimkitJoin:  'https://www.gimkit.com/join',
+    tampermonkey:'https://www.tampermonkey.net/',
+    violentmonkey:'https://violentmonkey.github.io/',
+  };
+  // Inject all href values after DOM loads
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-link]').forEach(el => {
+      const key = el.dataset.link;
+      if (LINKS[key]) el.href = LINKS[key];
+    });
+  });
+</script>
+
+<!-- ════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════ -->
+<nav id="main-nav" aria-label="Main navigation">
+  <a href="#hero" class="nav-brand" aria-label="Zyrox client — home">
+    <span class="nav-brand-dot"></span>
+    Zyrox client
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li><a href="#hero"     data-nav="hero">Home</a></li>
+    <li><a href="#contents" data-nav="contents">Contents</a></li>
+    <li><a href="#install"  data-nav="install">Install</a></li>
+    <li><a href="#"         data-link="github" class="nav-cta" aria-label="View on GitHub" target="_blank" rel="noopener">GitHub ↗</a></li>
+  </ul>
+
+  <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger-btn">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+  <a href="#hero"     id="mob-home">Home</a>
+  <a href="#contents" id="mob-contents">Contents</a>
+  <a href="#install"  id="mob-install">Install</a>
+  <a href="#" data-link="github" class="nav-cta" target="_blank" rel="noopener">GitHub ↗</a>
+</div>
+
+<!-- ════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════ -->
+<section id="hero" aria-labelledby="hero-heading">
+  <img
+    src="./images/logo_transparent.png"
+    alt="Zyrox client logo"
+    class="hero-logo"
+    onerror="this.style.display='none'"
+  />
+
+  <p class="hero-eyebrow">Gimkit userscript client</p>
+
+  <h1 class="hero-title" id="hero-heading">
+    <span>Zyrox</span> client
+  </h1>
+
+  <p class="hero-sub">
+    A modern userscript hacked client for Gimkit. More control. More power. Zero hassle.
+  </p>
+
+  <div class="hero-actions">
+    <a
+      href="#install"
+      class="btn btn-primary"
+      aria-label="Jump to the install section"
+    >
+      <!-- Download icon -->
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m8 11 4 4 4-4"/><rect x="3" y="17" width="18" height="4" rx="2"/></svg>
+      Install / Download
+    </a>
+    <a
+      href="#"
+      data-link="github"
+      class="btn btn-ghost"
+      target="_blank"
+      rel="noopener"
+      aria-label="View Zyrox client on GitHub (opens in new tab)"
+    >
+      <!-- GitHub icon -->
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.504.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.56 9.56 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.847-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+      View on GitHub
+    </a>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span>scroll</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════
+     CONTENTS / FEATURES
+═══════════════════════════════════════════════ -->
+<section id="contents" aria-labelledby="contents-heading">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">project contents</span>
+      <h2 class="section-title" id="contents-heading">What's inside</h2>
+      <p class="section-sub">Everything included in the Zyrox client repo, from the core script to utility tools.</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Card 1 — Main userscript -->
+      <article class="card" aria-label="Main userscript">
+        <div class="card-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3 class="card-title">Zyrox base script</h3>
+        <p class="card-desc">
+          The core userscript powering the client. Injects directly into Gimkit sessions, giving you access to a full hacked-client menu — no extensions, no extra setup.
+        </p>
+        <span class="card-tag">zyrox-base.js</span>
+      </article>
+
+      <!-- Card 2 — Packet sniffer -->
+      <article class="card" aria-label="Packet sniffer utility">
+        <div class="card-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </div>
+        <h3 class="card-title">Packet sniffer</h3>
+        <p class="card-desc">
+          A standalone utility that intercepts and logs Gimkit's WebSocket packets in real time. Ideal for understanding game mechanics or developing new features.
+        </p>
+        <span class="card-tag">utility</span>
+      </article>
+
+      <!-- Card 3 — Roadmap -->
+      <article class="card" aria-label="Roadmap highlights">
+        <div class="card-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3 class="card-title">Roadmap highlights</h3>
+        <p class="card-desc">What's coming next for Zyrox client:</p>
+        <ul class="roadmap-list">
+          <li>More game-mode feature support</li>
+          <li>UI polish &amp; settings panel</li>
+          <li>Auto-update mechanism</li>
+          <li>Community-requested hacks</li>
+        </ul>
+        <span class="card-tag">in progress</span>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════════
+     INSTALL SECTION
+═══════════════════════════════════════════════ -->
+<section id="install" aria-labelledby="install-heading">
+  <div class="container">
+
+    <div class="install-wrap">
+      <div class="install-header">
+        <span class="section-badge">get started</span>
+        <h2 class="section-title" id="install-heading" style="text-align:left; margin-bottom:0.5rem;">
+          Install in&nbsp;<span style="color:var(--red)">60 seconds</span>
+        </h2>
+        <p class="section-sub" style="text-align:left; margin:0;">
+          Three steps and you're in. Works on any browser with Tampermonkey or Violentmonkey.
+        </p>
+      </div>
+
+      <div class="install-body">
+
+        <!-- Steps -->
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">01</div>
+            <div class="step-content">
+              <p class="step-title">Install a userscript manager</p>
+              <p class="step-desc">
+                You'll need <strong>Tampermonkey</strong> or <strong>Violentmonkey</strong> — free browser extensions that run custom scripts on any page.
+              </p>
+              <div class="step-links">
+                <a href="#" data-link="tampermonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Tampermonkey (opens in new tab)">Tampermonkey ↗</a>
+                <a href="#" data-link="violentmonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Violentmonkey (opens in new tab)">Violentmonkey ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">02</div>
+            <div class="step-content">
+              <p class="step-title">Install Zyrox client from GreasyFork</p>
+              <p class="step-desc">
+                Click the <strong>Install on GreasyFork</strong> button on the right, then confirm the install prompt from your script manager.
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">03</div>
+            <div class="step-content">
+              <p class="step-title">Open gimkit.com/join</p>
+              <p class="step-desc">
+                Navigate to <a href="#" data-link="gimkitJoin" class="step-link" target="_blank" rel="noopener" aria-label="Open gimkit.com/join (opens in new tab)">gimkit.com/join ↗</a> and join any game. The Zyrox client menu will appear automatically.
+              </p>
+            </div>
+          </div>
+
+          <!-- Warning block -->
+          <div class="warn-block" role="note" aria-label="Chrome developer mode note">
+            <div class="warn-block-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.29 3.86-8.6 14.9A1 1 0 0 0 2.5 20.5h19a1 1 0 0 0 .86-1.51l-8.6-14.9a1 1 0 0 0-1.73 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Chrome users — developer mode required
+            </div>
+            <p>
+              Chrome restricts userscript managers by default. Go to
+              <code>chrome://extensions</code>, find your extension, and enable
+              <code>Developer mode</code> (top-right toggle). Then <strong>allow userscripts from GreasyFork</strong> when prompted.
+            </p>
+          </div>
+
+        </div><!-- /steps -->
+
+        <!-- Install actions -->
+        <div class="install-actions">
+
+          <a
+            href="#"
+            data-link="greasyfork"
+            class="btn btn-primary install-primary-btn"
+            target="_blank"
+            rel="noopener"
+            aria-label="Install Zyrox client on GreasyFork (opens in new tab)"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m8 11 4 4 4-4"/><rect x="3" y="17" width="18" height="4" rx="2"/></svg>
+            Install on GreasyFork
+          </a>
+
+          <a
+            href="#"
+            data-link="rawScript"
+            class="btn btn-outline-red install-alt-btn"
+            target="_blank"
+            rel="noopener"
+            aria-label="View or install the raw script file directly (opens in new tab)"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Direct script (raw)
+          </a>
+
+          <a
+            href="#"
+            data-link="github"
+            class="btn btn-ghost install-alt-btn"
+            target="_blank"
+            rel="noopener"
+            aria-label="View source on GitHub (opens in new tab)"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.504.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.56 9.56 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.847-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+            View source on GitHub
+          </a>
+
+          <!-- Support links -->
+          <div class="support-links">
+            <span>// help &amp; feedback</span>
+            <a href="#" data-link="issues"   class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue (opens in new tab)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              GitHub Issues
+            </a>
+            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork (opens in new tab)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              GreasyFork Feedback
+            </a>
+          </div>
+
+        </div><!-- /install-actions -->
+
+      </div><!-- /install-body -->
+    </div><!-- /install-wrap -->
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-brand">
+    <span class="footer-brand-dot"></span>
+    Zyrox client
+  </div>
+
+  <p class="footer-note">
+    Open source • Not affiliated with Gimkit
+  </p>
+
+  <ul class="footer-links" role="list">
+    <li><a href="#" data-link="github"    target="_blank" rel="noopener" aria-label="GitHub repository">GitHub</a></li>
+    <li><a href="#" data-link="greasyfork" target="_blank" rel="noopener" aria-label="GreasyFork page">GreasyFork</a></li>
+    <li><a href="#" data-link="issues"    target="_blank" rel="noopener" aria-label="Report an issue">Issues</a></li>
+  </ul>
+</footer>
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════ -->
+<script>
+  /* ─── Nav scroll state ─────────────────────── */
+  const nav = document.getElementById('main-nav');
+  const navLinks = document.querySelectorAll('[data-nav]');
+  const sections = ['hero','contents','install'];
+
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+    highlightNav();
+  }, { passive: true });
+
+  function highlightNav() {
+    const scrollY = window.scrollY + 120;
+    let active = '';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) active = id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.dataset.nav === active);
+    });
+  }
+  highlightNav();
+
+  /* ─── Hamburger / mobile menu ──────────────── */
+  const hamburger  = document.getElementById('hamburger-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+
+  // Close mobile menu on link click
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ─── Smooth scroll for #install CTA ──────── */
+  document.querySelectorAll('a[href="#install"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('install').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+  document.querySelectorAll('a[href="#hero"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  document.querySelectorAll('a[href="#contents"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('contents').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
