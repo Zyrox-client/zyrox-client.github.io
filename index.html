@@ -407,13 +407,15 @@
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.1rem;
+      align-items: stretch;
     }
 
-    .card-link { display:block; }
+    .card-link { display:block; height: 100%; }
 
     .card {
+      height: 100%;
       background: var(--bg-card);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-card);
@@ -648,8 +650,8 @@
       padding-top: 1.5rem;
       border-top: 1px solid var(--glass-border);
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+      flex-wrap: nowrap;
+      gap: 0.55rem;
       align-items: center;
     }
     .support-links span {
@@ -657,9 +659,11 @@
       color: var(--text-muted);
       font-family: var(--font-mono);
       letter-spacing: 0.05em;
+      margin-right: 0.25rem;
+      flex-shrink: 0;
     }
     .support-link {
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
@@ -669,6 +673,7 @@
       border: 1px solid var(--glass-border);
       background: rgba(255,255,255,0.03);
       transition: border-color var(--transition), color var(--transition), background var(--transition);
+      white-space: nowrap;
     }
     .support-link:hover {
       border-color: var(--red-border);
@@ -696,10 +701,11 @@
       font-size: 0.92rem;
       letter-spacing: 0.04em;
     }
-    .footer-brand-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--red);
+    .footer-logo {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px var(--red-glow));
     }
     .footer-note {
       font-size: 0.78rem;
@@ -754,9 +760,14 @@
     /* ───────────────────────────────────────────────
        RESPONSIVE
     ─────────────────────────────────────────────── */
+    @media (max-width: 992px) {
+      .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
+      .cards-grid { grid-template-columns: 1fr; }
 
       .install-body {
         grid-template-columns: 1fr;
@@ -899,8 +910,8 @@
 <section id="contents" aria-labelledby="contents-heading">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">project contents</span>
-      <h2 class="section-title" id="contents-heading">What's inside</h2>
+      <span class="section-badge">content</span>
+      <h2 class="section-title" id="contents-heading">Content</h2>
       <p class="section-sub">Everything included in the Zyrox client repo, from the core script to utility tools.</p>
     </div>
 
@@ -1098,7 +1109,7 @@
 ═══════════════════════════════════════════════ -->
 <footer>
   <div class="footer-brand">
-    <span class="footer-brand-dot"></span>
+    <img src="https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/main/images/logo_transparent.png" alt="" class="footer-logo" />
     Zyrox client
   </div>
 
