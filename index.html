@@ -118,12 +118,12 @@
       font-size: 1.05rem;
       letter-spacing: 0.04em;
     }
-    .nav-brand-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--red);
-      box-shadow: 0 0 8px var(--red);
-      flex-shrink: 0;
+    
+    .nav-logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px var(--red-glow));
     }
 
     .nav-links {
@@ -411,6 +411,8 @@
       gap: 1.25rem;
     }
 
+    .card-link { display:block; }
+
     .card {
       background: var(--bg-card);
       border: 1px solid var(--glass-border);
@@ -429,7 +431,7 @@
       background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,25,44,0.06) 0%, transparent 70%);
       pointer-events: none;
     }
-    .card:hover {
+    .card-link:hover .card {
       border-color: var(--red-border);
       box-shadow: 0 8px 40px rgba(232,25,44,0.12), 0 0 0 1px rgba(232,25,44,0.08);
       transform: translateY(-3px);
@@ -569,6 +571,9 @@
       margin-top: 0.6rem;
     }
     .step-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       font-family: var(--font-mono);
       font-size: 0.73rem;
       padding: 0.25rem 0.65rem;
@@ -578,6 +583,8 @@
       background: rgba(255,255,255,0.04);
       transition: border-color var(--transition), color var(--transition), background var(--transition);
     }
+    .step-link img { width: 16px; height: 16px; border-radius: 4px; }
+
     .step-link:hover {
       border-color: var(--red-border);
       color: var(--red);
@@ -809,7 +816,7 @@
 ═══════════════════════════════════════════════ -->
 <nav id="main-nav" aria-label="Main navigation">
   <a href="#hero" class="nav-brand" aria-label="Zyrox client — home">
-    <span class="nav-brand-dot"></span>
+    <img src="https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/main/images/logo_transparent.png" alt="" class="nav-logo" />
     Zyrox client
   </a>
 
@@ -838,7 +845,7 @@
 ═══════════════════════════════════════════════ -->
 <section id="hero" aria-labelledby="hero-heading">
   <img
-    src="./images/logo_transparent.png"
+    src="https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/main/images/logo_transparent.png"
     alt="Zyrox client logo"
     class="hero-logo"
     onerror="this.style.display='none'"
@@ -899,45 +906,55 @@
 
     <div class="cards-grid">
 
-      <!-- Card 1 — Main userscript -->
-      <article class="card" aria-label="Main userscript">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        </div>
-        <h3 class="card-title">Zyrox base script</h3>
-        <p class="card-desc">
-          The core userscript powering the client. Injects directly into Gimkit sessions, giving you access to a full hacked-client menu — no extensions, no extra setup.
-        </p>
-        <span class="card-tag">zyrox-base.js</span>
-      </article>
+      <a href="#install" class="card-link" aria-label="Open install section for Zyrox base script">
+        <article class="card" aria-label="Main userscript">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3 class="card-title">Zyrox base script</h3>
+          <p class="card-desc">The core userscript powering the client. Injects directly into Gimkit sessions, giving you access to a full hacked-client menu — no extensions, no extra setup.</p>
+          <span class="card-tag">zyrox-base.js</span>
+        </article>
+      </a>
 
-      <!-- Card 2 — Packet sniffer -->
-      <article class="card" aria-label="Packet sniffer utility">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </div>
-        <h3 class="card-title">Packet sniffer</h3>
-        <p class="card-desc">
-          A standalone utility that intercepts and logs Gimkit's WebSocket packets in real time. Ideal for understanding game mechanics or developing new features.
-        </p>
-        <span class="card-tag">utility</span>
-      </article>
+      <a href="#" data-link="github" target="_blank" rel="noopener" class="card-link" aria-label="Open features in GitHub repository">
+        <article class="card" aria-label="Feature highlights">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h7"/><path d="m18 14 3 3-3 3"/></svg>
+          </div>
+          <h3 class="card-title">Features</h3>
+          <p class="card-desc">Explore the full list of available hacks, utilities, and quality-of-life tools included in Zyrox client.</p>
+          <span class="card-tag">repo docs</span>
+        </article>
+      </a>
 
-      <!-- Card 3 — Roadmap -->
-      <article class="card" aria-label="Roadmap highlights">
-        <div class="card-icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </div>
-        <h3 class="card-title">Roadmap highlights</h3>
-        <p class="card-desc">What's coming next for Zyrox client:</p>
-        <ul class="roadmap-list">
-          <li>More game-mode feature support</li>
-          <li>UI polish &amp; settings panel</li>
-          <li>Auto-update mechanism</li>
-          <li>Community-requested hacks</li>
-        </ul>
-        <span class="card-tag">in progress</span>
-      </article>
+      <a href="https://greasyfork.org/en/scripts/576590-zyrox-packet-sniffer" target="_blank" rel="noopener" class="card-link" aria-label="Open packet sniffer on GreasyFork">
+        <article class="card" aria-label="Packet sniffer utility">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </div>
+          <h3 class="card-title">Packet sniffer</h3>
+          <p class="card-desc">A standalone utility that intercepts and logs Gimkit's WebSocket packets in real time. Ideal for understanding game mechanics or developing new features.</p>
+          <span class="card-tag">utility</span>
+        </article>
+      </a>
+
+      <a href="#" data-link="github" target="_blank" rel="noopener" class="card-link" aria-label="Open roadmap on GitHub repository">
+        <article class="card" aria-label="Roadmap highlights">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <h3 class="card-title">Roadmap highlights</h3>
+          <p class="card-desc">What's coming next for Zyrox client:</p>
+          <ul class="roadmap-list">
+            <li>More game-mode feature support</li>
+            <li>UI polish &amp; settings panel</li>
+            <li>Auto-update mechanism</li>
+            <li>Community-requested hacks</li>
+          </ul>
+          <span class="card-tag">in progress</span>
+        </article>
+      </a>
 
     </div>
   </div>
@@ -975,8 +992,8 @@
                 You'll need <strong>Tampermonkey</strong> or <strong>Violentmonkey</strong> — free browser extensions that run custom scripts on any page.
               </p>
               <div class="step-links">
-                <a href="#" data-link="tampermonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Tampermonkey (opens in new tab)">Tampermonkey ↗</a>
-                <a href="#" data-link="violentmonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Violentmonkey (opens in new tab)">Violentmonkey ↗</a>
+                <a href="#" data-link="tampermonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Tampermonkey (opens in new tab)"><img src="https://www.tampermonkey.net/images/icon144.png" alt="" />Tampermonkey ↗</a>
+                <a href="#" data-link="violentmonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Violentmonkey (opens in new tab)"><img src="https://violentmonkey.github.io/_astro/vm.C4h557K-.png" alt="" />Violentmonkey ↗</a>
               </div>
             </div>
           </div>
