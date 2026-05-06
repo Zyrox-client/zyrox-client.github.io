@@ -24,8 +24,6 @@
     gtag('config', 'G-BCRY20F1K4');
   </script>
 
-
-  
   <!-- Google search console tag-->
   <meta name="google-site-verification" content="l47VnqAl0mN8yVZA769zWHIDNsk53Tiu3Qyd4GiQafM" />
 
@@ -70,7 +68,6 @@
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
 
-    /* Focus styles */
     :focus-visible {
       outline: 2px solid var(--red);
       outline-offset: 3px;
@@ -136,14 +133,12 @@
       font-size: 1.05rem;
       letter-spacing: 0.04em;
     }
-    
     .nav-logo {
       width: 28px;
       height: 28px;
       object-fit: contain;
       filter: drop-shadow(0 0 10px var(--red-glow));
     }
-
     .nav-links {
       display: flex;
       align-items: center;
@@ -178,7 +173,6 @@
       box-shadow: 0 0 16px var(--red-glow) !important;
     }
 
-    /* Hamburger for mobile */
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -212,7 +206,6 @@
       padding: 0 clamp(1.25rem, 5vw, 2.5rem);
     }
 
-    /* Section label badge */
     .section-badge {
       display: inline-flex;
       align-items: center;
@@ -307,7 +300,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Scroll hint */
     .scroll-hint {
       position: absolute;
       bottom: 2rem;
@@ -385,7 +377,6 @@
       box-shadow: 0 0 16px var(--red-glow);
     }
 
-    /* icon inside button */
     .btn svg { flex-shrink: 0; }
 
     /* ───────────────────────────────────────────────
@@ -499,7 +490,6 @@
       padding: 0.22rem 0.65rem;
     }
 
-    /* Roadmap list inside card */
     .roadmap-list {
       list-style: none;
       margin-top: 0.75rem;
@@ -553,7 +543,6 @@
       align-items: start;
     }
 
-    /* Steps */
     .steps { display: flex; flex-direction: column; gap: 1.4rem; }
 
     .step {
@@ -607,14 +596,12 @@
       transition: border-color var(--transition), color var(--transition), background var(--transition);
     }
     .step-link img { width: 16px; height: 16px; border-radius: 4px; }
-
     .step-link:hover {
       border-color: var(--red-border);
       color: var(--red);
       background: rgba(232,25,44,0.08);
     }
 
-    /* Install actions panel */
     .install-actions {
       display: flex;
       flex-direction: column;
@@ -633,7 +620,6 @@
       justify-content: center;
     }
 
-    /* Warning block */
     .warn-block {
       margin-top: 1.2rem;
       padding: 1rem 1.2rem;
@@ -665,7 +651,6 @@
       color: var(--text-primary);
     }
 
-    /* Support links */
     .support-links {
       margin-top: 1.5rem;
       padding-top: 1.5rem;
@@ -711,7 +696,7 @@
       padding: 0.55rem 2.5rem;
       background: rgba(255,255,255,0.025);
       border-bottom: 1px solid var(--glass-border);
-      border-radius: 20px 20px 0 0; /* flush with card top corners */
+      border-radius: 20px 20px 0 0;
     }
     .install-tab {
       display: inline-flex;
@@ -741,11 +726,9 @@
       box-shadow: inset 0 0 0 1px rgba(232,25,44,0.08);
     }
 
-    /* Install panels — only the active body is shown */
-    .install-body { display: grid; }
     .install-body[hidden] { display: none !important; }
 
-    /* Extension panel specific */
+    /* Extension panel */
     .ext-browser-row {
       display: flex;
       flex-direction: column;
@@ -935,9 +918,6 @@
       .btn { width: 100%; justify-content: center; }
     }
 
-    /* ───────────────────────────────────────────────
-       UTILITY
-    ─────────────────────────────────────────────── */
     .sr-only {
       position: absolute; width: 1px; height: 1px;
       padding: 0; margin: -1px; overflow: hidden;
@@ -947,9 +927,6 @@
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════
-     PLACEHOLDER CONSTANTS (edit these freely)
-═══════════════════════════════════════════════ -->
 <script>
   const LINKS = {
     greasyfork:  'https://greasyfork.org/en/scripts/572408-zyrox-client-gimkit',
@@ -960,10 +937,8 @@
     gimkitJoin:  'https://www.gimkit.com/join',
     tampermonkey:'https://www.tampermonkey.net/',
     violentmonkey:'https://violentmonkey.github.io/',
-    // Extension version links (add more browsers here when ready)
-    extensionFirefox: 'https://addons.mozilla.org/e/firefox/addon/zyrox-client-for-gimkit/', // ← update with real AMO URL
+    extensionFirefox: 'https://addons.mozilla.org/e/firefox/addon/zyrox-client-for-gimkit/',
   };
-  // Inject all href values after DOM loads
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-link]').forEach(el => {
       const key = el.dataset.link;
@@ -972,9 +947,7 @@
   });
 </script>
 
-<!-- ════════════════════════════════════════════
-     NAV
-═══════════════════════════════════════════════ -->
+<!-- NAV -->
 <nav id="main-nav" aria-label="Main navigation">
   <a href="#hero" class="nav-brand" aria-label="Zyrox client — home">
     <img src="https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/main/images/logo_transparent.png" alt="" class="nav-logo" />
@@ -985,7 +958,7 @@
     <li><a href="#hero"     data-nav="hero">Home</a></li>
     <li><a href="#contents" data-nav="contents">Contents</a></li>
     <li><a href="#install"  data-nav="install">Install</a></li>
-    <li><a href="#"         data-link="github" class="nav-cta" aria-label="View on GitHub" target="_blank" rel="noopener">GitHub ↗</a></li>
+    <li><a href="#" data-link="github" class="nav-cta" aria-label="View on GitHub" target="_blank" rel="noopener">GitHub ↗</a></li>
   </ul>
 
   <button class="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger-btn">
@@ -993,7 +966,6 @@
   </button>
 </nav>
 
-<!-- Mobile menu -->
 <div class="nav-mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
   <a href="#hero"     id="mob-home">Home</a>
   <a href="#contents" id="mob-contents">Contents</a>
@@ -1001,9 +973,7 @@
   <a href="#" data-link="github" class="nav-cta" target="_blank" rel="noopener">GitHub ↗</a>
 </div>
 
-<!-- ════════════════════════════════════════════
-     HERO
-═══════════════════════════════════════════════ -->
+<!-- HERO -->
 <section id="hero" aria-labelledby="hero-heading">
   <img
     src="https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/main/images/logo_transparent.png"
@@ -1023,24 +993,11 @@
   </p>
 
   <div class="hero-actions">
-    <a
-      href="#install"
-      class="btn btn-primary"
-      aria-label="Jump to the install section"
-    >
-      <!-- Download icon -->
+    <a href="#install" class="btn btn-primary" aria-label="Jump to the install section">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m8 11 4 4 4-4"/><rect x="3" y="17" width="18" height="4" rx="2"/></svg>
       Install / Download
     </a>
-    <a
-      href="#"
-      data-link="github"
-      class="btn btn-ghost"
-      target="_blank"
-      rel="noopener"
-      aria-label="View Zyrox client on GitHub (opens in new tab)"
-    >
-      <!-- GitHub icon -->
+    <a href="#" data-link="github" class="btn btn-ghost" target="_blank" rel="noopener" aria-label="View Zyrox client on GitHub">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.504.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.56 9.56 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.847-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
       View on GitHub
     </a>
@@ -1054,9 +1011,7 @@
 
 <div class="divider"></div>
 
-<!-- ════════════════════════════════════════════
-     CONTENTS / FEATURES
-═══════════════════════════════════════════════ -->
+<!-- CONTENTS -->
 <section id="contents" aria-labelledby="contents-heading">
   <div class="container">
     <div class="section-header">
@@ -1123,15 +1078,13 @@
 
 <div class="divider"></div>
 
-<!-- ════════════════════════════════════════════
-     INSTALL SECTION
-═══════════════════════════════════════════════ -->
+<!-- INSTALL -->
 <section id="install" aria-labelledby="install-heading">
   <div class="container">
 
     <div class="install-wrap">
 
-      <!-- Tab bar at the very top of the card -->
+      <!-- Tab bar -->
       <div class="install-tab-bar" role="tablist" aria-label="Install method">
         <button
           class="install-tab active"
@@ -1141,7 +1094,6 @@
           id="tab-extension"
           data-tab="extension"
         >
-          <!-- Puzzle piece icon -->
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
           Extension
         </button>
@@ -1153,13 +1105,12 @@
           id="tab-userscript"
           data-tab="userscript"
         >
-          <!-- Code icon -->
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           Userscript
         </button>
       </div>
 
-      <!-- Header: badge + title + subtitle -->
+      <!-- Header -->
       <div class="install-header">
         <span class="section-badge">get started</span>
         <h2 class="section-title" id="install-heading" style="text-align:left; margin-bottom:0.5rem;">
@@ -1170,6 +1121,7 @@
         </p>
       </div>
 
+      <!-- EXTENSION PANEL -->
       <div class="install-body" id="panel-extension" role="tabpanel" aria-labelledby="tab-extension">
 
         <div class="steps">
@@ -1250,14 +1202,20 @@
 
           <div class="support-links">
             <span>// help &amp; feedback</span>
-            <a href="#" data-link="issues"   class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> GitHub Issues</a>
-            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> GreasyFork Feedback</a>
+            <a href="#" data-link="issues" class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              GitHub Issues
+            </a>
+            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              GreasyFork Feedback
+            </a>
           </div>
         </div><!-- /install-actions -->
 
       </div><!-- /panel-extension -->
 
-      <!-- ── USERSCRIPT PANEL ── -->
+      <!-- USERSCRIPT PANEL -->
       <div class="install-body" id="panel-userscript" role="tabpanel" aria-labelledby="tab-userscript" hidden>
 
         <div class="steps">
@@ -1315,272 +1273,24 @@
           </a>
           <div class="support-links">
             <span>// help &amp; feedback</span>
-            <a href="#" data-link="issues"   class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> GitHub Issues</a>
-            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> GreasyFork Feedback</a>
+            <a href="#" data-link="issues" class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              GitHub Issues
+            </a>
+            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              GreasyFork Feedback
+            </a>
           </div>
         </div><!-- /install-actions -->
 
       </div><!-- /panel-userscript -->
+
     </div><!-- /install-wrap -->
-
-  </div>
-</section>
-              <p class="step-desc">
-                You'll need <strong>Tampermonkey</strong> or <strong>Violentmonkey</strong> — free browser extensions that run custom scripts on any page.
-              </p>
-              <div class="step-links">
-                <a href="#" data-link="tampermonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Tampermonkey (opens in new tab)"><img src="https://www.tampermonkey.net/images/icon144.png" alt="" />Tampermonkey ↗</a>
-                <a href="#" data-link="violentmonkey" class="step-link" target="_blank" rel="noopener" aria-label="Get Violentmonkey (opens in new tab)"><img src="https://violentmonkey.github.io/_astro/vm.C4h557K-.png" alt="" />Violentmonkey ↗</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="step">
-            <div class="step-num" aria-hidden="true">02</div>
-            <div class="step-content">
-              <p class="step-title">Install Zyrox client from GreasyFork</p>
-              <p class="step-desc">
-                Click the <strong>Install on GreasyFork</strong> button on the right, then confirm the install prompt from your script manager.
-              </p>
-            </div>
-          </div>
-
-          <div class="step">
-            <div class="step-num" aria-hidden="true">03</div>
-            <div class="step-content">
-              <p class="step-title">Open gimkit.com/join</p>
-              <p class="step-desc">
-                Navigate to <a href="#" data-link="gimkitJoin" class="step-link" target="_blank" rel="noopener" aria-label="Open gimkit.com/join (opens in new tab)">gimkit.com/join ↗</a> and join any game. The Zyrox client menu will appear automatically.
-              </p>
-            </div>
-          </div>
-
-          <!-- Warning block -->
-          <div class="warn-block" role="note" aria-label="Chrome developer mode note">
-            <div class="warn-block-header">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.29 3.86-8.6 14.9A1 1 0 0 0 2.5 20.5h19a1 1 0 0 0 .86-1.51l-8.6-14.9a1 1 0 0 0-1.73 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              Chrome users — developer mode required
-            </div>
-            <p>
-              Chrome restricts userscript managers by default. Go to
-              <code>chrome://extensions</code>, find your extension, and enable
-              <code>Developer mode</code> (top-right toggle). Then <strong>allow userscripts from GreasyFork</strong> when prompted.
-            </p>
-          </div>
-
-        </div><!-- /steps -->
-
-        <!-- Install actions -->
-        <div class="install-actions">
-
-          <a
-            href="#"
-            data-link="greasyfork"
-            class="btn btn-primary install-primary-btn"
-            target="_blank"
-            rel="noopener"
-            aria-label="Install Zyrox client on GreasyFork (opens in new tab)"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m8 11 4 4 4-4"/><rect x="3" y="17" width="18" height="4" rx="2"/></svg>
-            Install on GreasyFork
-          </a>
-
-          <a
-            href="#"
-            data-link="rawScript"
-            class="btn btn-outline-red install-alt-btn"
-            target="_blank"
-            rel="noopener"
-            aria-label="View or install the raw script file directly (opens in new tab)"
-          >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            Direct script (raw)
-          </a>
-
-          <a
-            href="#"
-            data-link="github"
-            class="btn btn-ghost install-alt-btn"
-            target="_blank"
-            rel="noopener"
-            aria-label="View source on GitHub (opens in new tab)"
-          >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.504.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.56 9.56 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.847-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
-            View source on GitHub
-          </a>
-
-          <!-- Support links -->
-          <div class="support-links">
-            <span>// help &amp; feedback</span>
-            <a href="#" data-link="issues"   class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue (opens in new tab)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              GitHub Issues
-            </a>
-            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork (opens in new tab)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              GreasyFork Feedback
-            </a>
-          </div>
-
-        </div><!-- /install-actions -->
-
-      </div><!-- /install-body userscript -->
-
-      <!-- ── EXTENSION PANEL ── -->
-      <div class="install-body" id="panel-extension" role="tabpanel" aria-labelledby="tab-extension" hidden>
-
-        <!-- Steps -->
-        <div class="steps">
-
-          <div class="step">
-            <div class="step-num" aria-hidden="true">01</div>
-            <div class="step-content">
-              <p class="step-title">Open Firefox Add-ons</p>
-              <p class="step-desc">
-                The Zyrox extension is available directly on the Firefox Add-ons store (AMO). No extra setup, no developer mode needed.
-              </p>
-            </div>
-          </div>
-
-          <div class="step">
-            <div class="step-num" aria-hidden="true">02</div>
-            <div class="step-content">
-              <p class="step-title">Click "Add to Firefox"</p>
-              <p class="step-desc">
-                Hit the <strong>Add to Firefox</strong> button on the right and accept the permissions prompt. The extension installs instantly.
-              </p>
-            </div>
-          </div>
-
-          <div class="step">
-            <div class="step-num" aria-hidden="true">03</div>
-            <div class="step-content">
-              <p class="step-title">Open gimkit.com/join</p>
-              <p class="step-desc">
-                Navigate to <a href="#" data-link="gimkitJoin" class="step-link" target="_blank" rel="noopener" aria-label="Open gimkit.com/join (opens in new tab)">gimkit.com/join ↗</a> and join a game. The Zyrox client menu loads automatically — no userscript manager required.
-              </p>
-            </div>
-          </div>
-
-          <!-- Info block -->
-          <div class="warn-block" role="note" aria-label="Extension browser support note" style="background:rgba(80,100,255,0.06); border-color:rgba(100,120,255,0.28); border-left-color:#6080ff;">
-            <div class="warn-block-header" style="color:#8090ff;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Extension support is expanding
-            </div>
-            <p>
-              The native extension currently supports <strong style="color:var(--text-primary)">Firefox only</strong>. Chrome, Edge, and other browsers are in the works — follow the <a href="#" data-link="github" target="_blank" rel="noopener" style="color:var(--text-secondary); text-decoration:underline; text-underline-offset:2px;">GitHub repo</a> for updates. In the meantime, use the <button onclick="switchTab('userscript')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:inherit;padding:0;font-family:inherit;text-decoration:underline;text-underline-offset:2px;">Userscript tab</button> for other browsers.
-            </p>
-          </div>
-
-        </div><!-- /steps -->
-
-        <!-- Extension actions -->
-        <div class="install-actions">
-
-          <!-- Browser rows -->
-          <div class="ext-browser-row">
-
-            <!-- Firefox — available -->
-            <div class="ext-browser-item">
-              <!-- Firefox SVG logo -->
-              <svg class="ext-browser-icon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <defs>
-                  <radialGradient id="ffg1" cx="50%" cy="100%" r="100%">
-                    <stop offset="0%" stop-color="#FF980E"/>
-                    <stop offset="100%" stop-color="#FF3750"/>
-                  </radialGradient>
-                  <radialGradient id="ffg2" cx="30%" cy="20%" r="80%">
-                    <stop offset="0%" stop-color="#FF980E"/>
-                    <stop offset="100%" stop-color="#FF3750" stop-opacity="0"/>
-                  </radialGradient>
-                </defs>
-                <circle cx="128" cy="128" r="128" fill="url(#ffg1)"/>
-                <circle cx="128" cy="128" r="128" fill="url(#ffg2)"/>
-                <ellipse cx="128" cy="135" rx="68" ry="70" fill="#0060DF" opacity="0.9"/>
-                <ellipse cx="128" cy="148" rx="52" ry="54" fill="#0080FF" opacity="0.7"/>
-                <circle cx="128" cy="152" r="40" fill="#00B3F4" opacity="0.5"/>
-                <circle cx="128" cy="158" r="28" fill="#fff" opacity="0.15"/>
-              </svg>
-              <div class="ext-browser-info">
-                <div class="ext-browser-name">Firefox</div>
-                <div class="ext-browser-sub">via Firefox Add-ons (AMO)</div>
-              </div>
-              <a
-                href="#"
-                data-link="extensionFirefox"
-                class="ext-browser-btn available"
-                target="_blank"
-                rel="noopener"
-                aria-label="Install Zyrox extension on Firefox (opens in new tab)"
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m8 11 4 4 4-4"/><rect x="3" y="17" width="18" height="4" rx="2"/></svg>
-                Add to Firefox
-              </a>
-            </div>
-
-            <!-- Chrome — coming soon -->
-            <div class="ext-browser-item coming-soon" aria-label="Chrome extension coming soon">
-              <svg class="ext-browser-icon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="128" cy="128" r="128" fill="#EAEAEA"/>
-                <circle cx="128" cy="128" r="72" fill="#4285F4"/>
-                <path d="M128 56 H256 A128 128 0 0 1 192 238 Z" fill="#EA4335"/>
-                <path d="M128 56 H0 A128 128 0 0 0 64 238 Z" fill="#FBBC05"/>
-                <path d="M64 238 A128 128 0 0 0 192 238 L160 174 A72 72 0 0 1 96 174 Z" fill="#34A853"/>
-                <circle cx="128" cy="128" r="42" fill="white"/>
-                <circle cx="128" cy="128" r="30" fill="#4285F4"/>
-              </svg>
-              <div class="ext-browser-info">
-                <div class="ext-browser-name">Chrome / Chromium</div>
-                <div class="ext-browser-sub">coming soon — use Userscript tab</div>
-              </div>
-              <span class="ext-browser-btn soon" aria-hidden="true">Soon</span>
-            </div>
-
-            <!-- Edge — coming soon -->
-            <div class="ext-browser-item coming-soon" aria-label="Edge extension coming soon">
-              <svg class="ext-browser-icon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="128" cy="128" r="128" fill="#0078D4"/>
-                <path d="M60 180 Q80 80 180 100 Q200 145 140 175 Q100 195 60 180Z" fill="#50E6FF" opacity="0.8"/>
-                <ellipse cx="128" cy="165" rx="60" ry="20" fill="#fff" opacity="0.2"/>
-              </svg>
-              <div class="ext-browser-info">
-                <div class="ext-browser-name">Edge</div>
-                <div class="ext-browser-sub">coming soon — use Userscript tab</div>
-              </div>
-              <span class="ext-browser-btn soon" aria-hidden="true">Soon</span>
-            </div>
-
-          </div><!-- /ext-browser-row -->
-
-          <p class="ext-note">
-            <strong>Why an extension?</strong> The native extension doesn't need a userscript manager — it works out of the box on Firefox with zero extra config and no developer-mode toggle required.
-          </p>
-
-          <!-- Support links (same as userscript panel) -->
-          <div class="support-links">
-            <span>// help &amp; feedback</span>
-            <a href="#" data-link="issues"   class="support-link" target="_blank" rel="noopener" aria-label="Open a GitHub issue (opens in new tab)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              GitHub Issues
-            </a>
-            <a href="#" data-link="feedback" class="support-link" target="_blank" rel="noopener" aria-label="Leave feedback on GreasyFork (opens in new tab)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              GreasyFork Feedback
-            </a>
-          </div>
-
-        </div><!-- /install-actions -->
-
-      </div><!-- /install-body extension -->
-    </div><!-- /install-wrap -->
-
   </div>
 </section>
 
-<!-- ════════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-brand">
     <img src="https://raw.githubusercontent.com/Zyrox-client/Zyrox-gimkit-client/main/images/logo_transparent.png" alt="" class="footer-logo" />
@@ -1598,11 +1308,8 @@
   </ul>
 </footer>
 
-<!-- ════════════════════════════════════════════
-     SCRIPTS
-═══════════════════════════════════════════════ -->
 <script>
-  /* ─── Nav scroll state ─────────────────────── */
+  /* Nav scroll state */
   const nav = document.getElementById('main-nav');
   const navLinks = document.querySelectorAll('[data-nav]');
   const sections = ['hero','contents','install'];
@@ -1625,7 +1332,7 @@
   }
   highlightNav();
 
-  /* ─── Hamburger / mobile menu ──────────────── */
+  /* Hamburger / mobile menu */
   const hamburger  = document.getElementById('hamburger-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
@@ -1634,7 +1341,6 @@
     hamburger.setAttribute('aria-expanded', String(open));
   });
 
-  // Close mobile menu on link click
   mobileMenu.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       mobileMenu.classList.remove('open');
@@ -1642,7 +1348,7 @@
     });
   });
 
-  /* ─── Smooth scroll for #install CTA ──────── */
+  /* Smooth scroll */
   document.querySelectorAll('a[href="#install"]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
@@ -1655,7 +1361,8 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
-  /* ─── Install tab switcher ─────────────────── */
+
+  /* Install tab switcher */
   function switchTab(name) {
     document.querySelectorAll('.install-tab').forEach(btn => {
       const isActive = btn.dataset.tab === name;
@@ -1670,7 +1377,6 @@
   document.querySelectorAll('.install-tab').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
-
 </script>
 
 </body>
